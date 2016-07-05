@@ -6,4 +6,26 @@ router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
 
+/**
+ *  跳转到登陆页面
+ */
+router.get('/login', function(req, res, next) {
+  res.send('respond with a resource');
+});
+
+/**
+ *  post 登陆
+ */
+router.post('/login', function(req, res, next) {
+  res.send('respond with a resource');
+});
+
+router.get('/register', function(req, res, next) {
+  res.send('respond with a resource');
+});
+
+router.post('/register', function(req, res, next) {
+  res.send('respond with a resource');
+});
+
 module.exports = router;

@@ -22,9 +22,8 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-var  lessMiddleware = require("less-middleware");
-lessMiddleware(path.join(__dirname, '/public'));
 // app.use(require('node-compass')({mode: 'expanded'}));
+app.use(require('less-middleware')(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
@@ -76,9 +75,6 @@ hbs.registerHelper('block', function(name) {
   blocks[name] = [];
   return val;
 });
-
-//配置局部模板路径
-hbs.registerPartials(__dirname + '/views/');
 
 
 module.exports = app;
