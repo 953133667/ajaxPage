@@ -76,5 +76,6 @@ hbs.registerHelper('block', function(name) {
   return val;
 });
 
+hbs.registerPartials(__dirname + '/views/global/');
 
 module.exports = app;

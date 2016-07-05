@@ -10,7 +10,7 @@ router.get('/', function(req, res, next) {
  *  跳转到登陆页面
  */
 router.get('/login', function(req, res, next) {
-  res.send('respond with a resource');
+  res.render('user/login', { title: '用户登录' });
 });
 
 /**
