@@ -85,7 +85,7 @@ hbs.registerHelper('block', function(name) {
 hbs.registerPartials(__dirname + '/views/global/');
 
 //读取配置文件
-var config=JSON.parse(fs.readFileSync('./config.json'));
+var config=JSON.parse(fs.readFileSync(__dirname+'/config.json'));
 
 //配置ssesion
 /*app.use(session({

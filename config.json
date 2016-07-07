@@ -1,8 +1,3 @@
-/*!
- * 名称：config.json
- * 描述：这是该项目的全局配置文件，项目在启动时，会将该文件读取到全局对象 config 中
- * By：  dehua.ke    953133667@qq.com
- */
 {
   "token": "76217dbfe1b437b741652b61ebe4faea"
 }
