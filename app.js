@@ -3,7 +3,9 @@ var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
+var session = require('express-session');
 var bodyParser = require('body-parser');
+var fs = require('fs');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -11,6 +13,9 @@ var users = require('./routes/users');
 var hbs = require('hbs');
 
 var app = express();
+
+//开发模式
+app.set('env', 'development');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -76,6 +81,47 @@ hbs.registerHelper('block', function(name) {
   return val;
 });
 
+//配置模板路径
 hbs.registerPartials(__dirname + '/views/global/');
+
+//读取配置文件
+var config=JSON.parse(fs.readFileSync('./config.json'));
+
+//配置ssesion
+/*app.use(session({
+  secret: '12345',
+  name: 'nodeApp3', //这里的name值得是cookie的name，默认cookie的name是：connect.sid
+  cookie: {maxAge: 800000}, //设置maxAge是80000ms，即80s后session和相应的cookie失效过期
+  resave: false,
+  saveUninitialized: true
+}));*/
+app.set('trust proxy', 1) // trust first proxy
+app.use(session(
+    {
+      secret: 'keyboard cat',
+      resave: false,
+      saveUninitialized: true,
+      cookie: {
+        secure: true,
+        maxAge: 600000
+      }
+    }
+));
+app.use(function (req, res, next) {
+  var views = req.session.views
+
+  if (!views) {
+    views = req.session.views = {}
+  }
+
+  // get the url pathname
+  var pathname = parseurl(req).pathname
+
+  // count the views
+  views[pathname] = (views[pathname] || 0) + 1
+
+  next()
+});
+
 
 module.exports = app;
