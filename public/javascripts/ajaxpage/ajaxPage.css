@@ -1,0 +1,13 @@
+@charset "utf-8";
+/*可合并到你的css中*/
+.page {pagesize:12px; background-color:#fff;text-align: right; line-height: 25px; font-size: 0; }
+.page a,.page span { color:#333; text-decoration:none;cursor: pointer; padding: 0 8px; border: 1px solid #dedede; display: inline-block; font-size: 12px; margin-right: 5px; }
+.page .disable { background-color: #f3f3f3; cursor: default; color: #999; }
+.page a:hover,.page .on { background-color: #a40000; text-decoration: none; color: #fff; border-color: #a40000; }
+.page .on { cursor: default; }
+.page .dot { cursor: default; border: none; vertical-align: 5px; }
+.page .href{border:none;height:30px;line-height:33px;overflow:hidden;vertical-align:top;_vertical-align:middle;}
+.page label{ vertical-align:middle;}
+.page .a_text{margin:0 5px;width:26px;border:1px solid #dedede;text-align:center;height:18px;line-height:18px; vertical-align:middle;}
+.page .a_text:focus{border-color:#a40000;}
+.page .a_button{margin-left:5px;background-color:#a40000;color:#fff;width:40px;text-align:center;border:0;height:24px;line-height:24px; vertical-align:middle; cursor:pointer;}

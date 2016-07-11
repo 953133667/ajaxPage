@@ -1,0 +1,83 @@
+{{!-- 引入header.hbs 文件，作为全局的头部文件 --}}
+{{> header}}
+
+<div class="container">
+    <div>
+        <table class="table table-bordered text-center">
+            <thead>
+            <tr>
+                <th><input type="checkbox"></th>
+                <th>员工姓名</th>
+                <th>员工手机号</th>
+                <th>分组</th>
+                <th>系统角色</th>
+                <th>本月用车限额剩余/元</th>
+                <th>单次用车限额/元</th>
+                <th>权限状态</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody id="tbody">
+            <tr>
+                <td colspan="9">
+                    <div class="clearfix ui-center-loading-box">
+                        <div class="col-lg-10 ui-padding-0 ui-center-loading-txt"> 正在努力加载数据，请稍后......</div>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="page" id="J_PageBar">
+
+    </div>
+</div>
+
+
+
+{{#extend "stylesheets"}}
+    <link rel="stylesheet" href="/stylesheets/table.min.css">
+    <link rel="stylesheet" href="/stylesheets/demo.css">
+{{/extend}}
+
+{{#extend "scripts"}}
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+    <!--必须的库文件-->
+    <link rel="stylesheet" href="/javascripts/ajaxpage/ajaxpage.css">
+    <script src="/javascripts/ajaxpage/ajaxpage.js"></script>
+    <!--/必须的库文件-->
+
+    <script>
+        //document ready
+        $(function () {
+            //ajaxPage
+            $("#tbody").ajaxPage({
+                pageSize: 10,
+                url: "/jokelist",
+                data: {
+                    "key":"931a524e5ba7cc6f022ecb4a57adfe5c",
+                    "sort":"asc",
+                    "time":"1418816972"
+                },
+                type: "post",
+                dataType : "json",//数据类型为json
+                pageId: $("#J_PageBar"),  //分页菜单容器
+                run: true,
+                success: function (res) {
+                    console.log(res);
+                    /*                if (res.success) {
+                     //渲染数据
+                     var html = $("#J_SearchTmpl").tmpl(res.obj);
+                     $("#tbody").html(html);
+                     } else {
+                     alert(res.msg);
+                     }*/
+                }
+            });
+        });
+    </script>
+{{/extend}}
