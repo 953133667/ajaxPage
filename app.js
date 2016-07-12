@@ -80,12 +80,16 @@ hbs.registerHelper('block', function(name) {
   blocks[name] = [];
   return val;
 });
+//这个模块的内容后台不编译，留给前台编译
+hbs.registerHelper('pass', function() {
+  return "";
+});
 
 //配置模板路径
 hbs.registerPartials(__dirname + '/views/global/');
 
 //读取配置文件
-var config=JSON.parse(fs.readFileSync(__dirname+'/config.json'));
+global.config=JSON.parse(fs.readFileSync(__dirname+'/config.json'));
 
 //配置ssesion
 /*app.use(session({

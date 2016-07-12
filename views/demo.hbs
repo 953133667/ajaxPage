@@ -6,15 +6,12 @@
         <table class="table table-bordered text-center">
             <thead>
             <tr>
-                <th><input type="checkbox"></th>
-                <th>员工姓名</th>
-                <th>员工手机号</th>
-                <th>分组</th>
-                <th>系统角色</th>
-                <th>本月用车限额剩余/元</th>
-                <th>单次用车限额/元</th>
-                <th>权限状态</th>
-                <th>操作</th>
+                <th>图片</th>
+                <th>id</th>
+                <th>mark</th>
+                <th>来源</th>
+                <th>标题</th>
+                <th>链接</th>
             </tr>
             </thead>
             <tbody id="tbody">
@@ -32,7 +29,18 @@
 
     </div>
 </div>
-
+<!--结果模板-->
+{{#pass}}
+<script id='j-tmpl' type='text/x-jquery-tmpl'>
+<tr>
+<td>${result}</td>
+<td>${Name}</td>
+<td>${Name}</td>
+<td>${Name}</td>
+<td>${Name}</td>
+</tr>
+</script>
+{{/pass}}
 
 
 {{#extend "stylesheets"}}
@@ -51,17 +59,17 @@
     <script src="/javascripts/ajaxpage/ajaxpage.js"></script>
     <!--/必须的库文件-->
 
+    <script src="/javascripts/jquery.tmpl.min.js"></script>
+
     <script>
         //document ready
         $(function () {
             //ajaxPage
             $("#tbody").ajaxPage({
-                pageSize: 10,
                 url: "/jokelist",
                 data: {
-                    "key":"931a524e5ba7cc6f022ecb4a57adfe5c",
-                    "sort":"asc",
-                    "time":"1418816972"
+                    "pno":1,
+                    "ps":10
                 },
                 type: "post",
                 dataType : "json",//数据类型为json
@@ -69,8 +77,12 @@
                 run: true,
                 success: function (res) {
                     console.log(res);
+
+                    $.tmpl( $("#j-tmpl").html(),res).appendTo( "#tbody" );
+//                    $("#tbody").html(html);
                     /*                if (res.success) {
                      //渲染数据
+
                      var html = $("#J_SearchTmpl").tmpl(res.obj);
                      $("#tbody").html(html);
                      } else {
