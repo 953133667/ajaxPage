@@ -4,15 +4,32 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
+var redisStore = require('connect-redis')(session);
 var bodyParser = require('body-parser');
 var fs = require('fs');
+
+var app = express();
+
+//配置ssesion
+// Use the session middleware
+var options = {
+  "host": "127.0.0.1",
+  "port": "6379",
+  "ttl": 60 * 60 * 24 * 30,   //Session的有效期为30天
+};
+// 此时req对象还没有session这个属性
+app.use(session({
+  store: new redisStore(options),
+  secret: 'express is powerful'
+}));
+// 经过中间件处理后，可以通过req.session访问session object。比如如果你在session中保存了session.userId就可以根据userId查找用户的信息了。
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
 var hbs = require('hbs');
 
-var app = express();
+
 
 //开发模式
 app.set('env', 'development');
@@ -80,10 +97,7 @@ hbs.registerHelper('block', function(name) {
   blocks[name] = [];
   return val;
 });
-//这个模块的内容后台不编译，留给前台编译
-hbs.registerHelper('pass', function() {
-  return "";
-});
+
 
 //配置模板路径
 hbs.registerPartials(__dirname + '/views/global/');
@@ -91,41 +105,7 @@ hbs.registerPartials(__dirname + '/views/global/');
 //读取配置文件
 global.config=JSON.parse(fs.readFileSync(__dirname+'/config.json'));
 
-//配置ssesion
-/*app.use(session({
-  secret: '12345',
-  name: 'nodeApp3', //这里的name值得是cookie的name，默认cookie的name是：connect.sid
-  cookie: {maxAge: 800000}, //设置maxAge是80000ms，即80s后session和相应的cookie失效过期
-  resave: false,
-  saveUninitialized: true
-}));*/
-app.set('trust proxy', 1) // trust first proxy
-app.use(session(
-    {
-      secret: 'keyboard cat',
-      resave: false,
-      saveUninitialized: true,
-      cookie: {
-        secure: true,
-        maxAge: 600000
-      }
-    }
-));
-app.use(function (req, res, next) {
-  var views = req.session.views
 
-  if (!views) {
-    views = req.session.views = {}
-  }
-
-  // get the url pathname
-  var pathname = parseurl(req).pathname
-
-  // count the views
-  views[pathname] = (views[pathname] || 0) + 1
-
-  next()
-});
 
 
 

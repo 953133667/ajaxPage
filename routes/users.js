@@ -14,23 +14,27 @@ router.get('/login', function(req, res, next) {
   res.render('users/login', { title: '用户登录' });
 });
 
+
+router.get('/logout', function(req, res) {
+  req.session.user = null;
+  res.redirect('/');
+});
+
 /**
  *  post 登陆
  */
-router.post('/login', function(req, res, next) {
+router.post('/login', function (req, res, next) {
 
-  console.log(req.body);
-  req.session.user_id = "ffffff";
-  console.log(req.session.user_id);
+  var session = req.session;
+  var data = req.body;
 
-/*  req.session.cookie.user={
-    "username":req.body.username,
-    "password":req.body.password
-  };*/
-  /* 发送一个json 格式的响应 */
+  session.user = data;
+
+  // res.json(session);
   res.json({
-    "user": req.body
+    "user": session.user
   });
+
 });
 
 router.get('/register', function(req, res, next) {
