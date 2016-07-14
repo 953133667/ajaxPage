@@ -97,6 +97,9 @@ hbs.registerHelper('block', function(name) {
   blocks[name] = [];
   return val;
 });
+hbs.registerHelper('raw', function(options) {
+  return options.fn();
+});
 
 
 //配置模板路径

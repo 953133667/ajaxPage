@@ -62,8 +62,8 @@
             }
             options.mark = false;
             //更新 pageSize pageNo的值
-            options.data.page = options.page;
-            options.data.pagesize = options.pageSize;
+            options.data.pno = options.page;
+            options.data.ps = options.pageSize;
 
             //console.log(c.data);
 
@@ -76,7 +76,6 @@
                 data: options.data,
                 type: options.type,
                 success: function (res) {
-                    console.log(res);
                     if (res.error_code === 0) {
                         //如果查询信息成功
                         var pageCount = res.result.totalPage;
