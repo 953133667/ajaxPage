@@ -1,7 +1,8 @@
 /*
  # By 柯德华;
  # Date 2015.6;
- # ajax分页插件，基于 page.js，感谢 网友谢亮
+ # ajax分页插件，
+ # 基于 page.js添加了一些更符合实际业务的功能，感谢 网友谢亮的分享 http://www.jq-school.com/Detail.aspx?id=267
  */
 ;(function ($) {
     var ajaxPage = function (options) {
