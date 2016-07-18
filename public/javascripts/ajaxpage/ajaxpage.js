@@ -1,9 +1,7 @@
 /*
- # by xl;
- # www.xuexb.com;
- # jquery;
- # 修改自柯德华
- # ajax分页插件，基于 page.js，感谢原作者 网友谢亮
+ # By 柯德华;
+ # Date 2015.6;
+ # ajax分页插件，基于 page.js，感谢 网友谢亮
  */
 ;(function ($) {
     var ajaxPage = function (options) {

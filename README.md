@@ -22,12 +22,12 @@
 
 ###模板（Template）
 ***
-#####你需要在页面中定义handlebars模板，以方便数据渲染，没听过handlebars模板引擎？请移步 [handlebars官网](http://handlebarsjs.com/ "handlebars") 利用前端模板引擎，提高模板的可读性和可维护性：
+#####你需要在页面中定义handlebars模板，以方便数据渲染，没听过handlebars模板引擎？请移步 [handlebars官网](http://handlebarsjs.com/ "handlebars") ， 利用前端模板引擎，提高模板的可读性和可维护性：
     <script id='j-tmpl' type='text/x-jquery-tmpl'>
 		{{#each list}}
    		 <tr>
        		<td>
-         		<img class="ui-news-img" src="{{firstImg}}" alt="">
+         		<img class="ui-news-img" src="{{f利用前端模板引擎irstImg}}" alt="">
        		</td>
        		<td>{{id}}</td>
        		<td>{{mark}}</td>
