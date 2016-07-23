@@ -105,5 +105,4 @@
 
 ###鸣谢（Thanks）
 ***
-* 感谢 网友谢亮的分享，基于 page.js添加了一些更符合实际业务的功能，http://www.jq-school.com/Detail.aspx?id=267
 * 感谢聚合数据提供的免费数据接口支持 https://www.juhe.cn/
