@@ -12,10 +12,12 @@
             pageSize: 10,		//每页多少个
             url: null, //后端 url, {page} 为当前页, 可以为伪静态如:  xl_{page}.html
             run: false,	//是否开始加载
+            pageList:[10,20],  //每页多少条数据 数组
+            toView:{},
             /*			beforeSend		: true,	//请求前调用
              complete		: true,	//请求后调用*/
             pageId: null, 	//分页容器
-            noData: "\u6CA1\u6709\u627E\u5230",	//没有数据时提示
+            noData: "暂时没有符合条件的数据",	//没有数据时提示
             //content			: null,		//处理内容的循环,如 function () { return [list]标签是:{title},内容:{content}[/list] }
             success: null,     //成功时的回调函数
             data: {},		//传递到后台的数据
@@ -38,13 +40,13 @@
         }
         var ajaxPage = {};
 
-        ajaxPage.r = function (tmplobj, opt) {
+/*        ajaxPage.r = function (tmplobj, opt) {
             //使用 模板技术生成HTML  obj代表的是 HTML模板数据，opt代表的是json数据
             var htmlstr = tmplobj.tmpl(opt);
 
             //console.log(htmlstr);
             return htmlstr;
-        }
+        }*/
 
         ajaxPage.run = function () {
             if (options.isLoad) {
@@ -67,8 +69,6 @@
             //console.log(c.data);
 
             $.ajax({
-                //global: c.global,
-                global: false,
                 url: options.url,
                 beforeSend: options.beforeSend,
                 complete: options.complete,
@@ -100,11 +100,19 @@
             });
         }
 
-        ajaxPage.get = function (i) {
+        /**
+         *
+         * @param runCase
+         * @returns {*}
+         */
+        ajaxPage.get = function (runCase) {
             if (!options.isLoad || !options.mark || options.pageCount < 1) {
                 return ajaxPage;
             }
-            switch (i) {
+            //运行方案名称
+            var caseName = runCase.name;
+
+            switch (caseName) {
                 case "pre":
                     options.page--;
                     break;
@@ -117,20 +125,17 @@
                 case "last":
                     options.page = options.pageCount;
                     break;
-                default :
-                    if (isNaN(i)) {
+                case "resize":
+                    //重置 pageSize
+                    options.pageSize = runCase.data;
+                    break;
+                case "topage":
+                    //跳转到某一页
+                    if(isNaN(runCase.data)){
                         break;
                     }
-                    i = parseInt(i);
-                    if (i > options.pageCount) {
-                        i = options.pageCount;
-                    }
-                    if (i == options.page) {
-                        return false
-                    }
-                    ;
-
-                    options.page = i;
+                    var page = parseInt(runCase.data);
+                    options.page = page;
                     break;
             }
             ajaxPage.ajax();
@@ -140,34 +145,60 @@
         ajaxPage.toPageBind = function () {
             var pId = options.pageId;
             pId.find("a.a_pre").click(function () {
-                ajaxPage.get("pre");
+                ajaxPage.get({
+                    "name":"pre"
+                });
             });
             pId.find("a.a_next").click(function () {
-                ajaxPage.get("next");
+                ajaxPage.get({
+                    "name":"next"
+                });
             });
             pId.find("a.a_first").click(function () {
-                ajaxPage.get("first");
+                ajaxPage.get({
+                    "name":"first"
+                });
             });
             pId.find("a.a_last").click(function () {
-                ajaxPage.get("last");
+                ajaxPage.get({
+                    "name":"last"
+                });
             });
             pId.find("a.a_href").click(function () {
-                ajaxPage.get($(this).attr("data-i"));
+                var data = $(this).attr("data-i");
+                ajaxPage.get({
+                    "name":"topage",
+                    "data":data
+                });
             });
             pId.find('input.a_text').keydown(function (e) {
                 if (e.keyCode === 13) {
-                    ajaxPage.get($.trim($(this).val()));
+                    ajaxPage.get({
+                        "name":"topage",
+                        "data":$.trim($(this).val())
+                    });
                 }
-                ;
             });
             pId.find("input.a_button").click(function () {
-                ajaxPage.get($.trim(pId.find('input.a_text').val()));
+                ajaxPage.get({
+                    "name":"topage",
+                    "data":$.trim(pId.find('input.a_text').val())
+                });
+            });
+
+            //为底部pagesize  下拉菜单绑定事件
+            pId.find("#j-page-list").on("change",function () {
+                ajaxPage.get({
+                    "name":"resize",
+                    "data":$.trim($(this).val())
+                });
             });
         }
 
         ajaxPage.toPage = function () {
             var str = "";
             if (options.recordCount > options.pageSize) {//如果总共页大小每页多少条则,否则不出现分页码
+
                 var page = options.page * 1,
                     pageSize = options.pageSize * 1,
                     i = 1,
@@ -195,24 +226,23 @@
                     } else {
                         str += "<a href=\"javascript:;\" class=\"a_first\">1</a>";
                     }
-                    ;
+
                     if (page > 5) {
                         str += "<span class=\"dot\">...</span>";
                     }
-                    ;
+
                     if (page < 6) {
                         start = 1;
                     } else {
                         start = page - 3;
                     }
-                    ;
 
                     if (page > (pageCount - 5)) {
                         end = pageCount;
                     } else {
                         end = page + 4;
                     }
-                    ;
+
                     for (var i2 = start; i2 < end; i2++) {
                         if (i2 !== 1 && i2 !== pageCount) {//避免重复输出1和最后一页
                             if (i2 === page) {
@@ -222,19 +252,19 @@
                             }
                         }
                     }
-                    ;
+
                     if (page < (pageCount - 5)) {
                         str += "<span class=\"dot\">...</span>";
                     }
-                    ;
+
                     if (page === pageCount) {
                         str += "<span class=\"on\">" + pageCount + "</span>";
                     } else {
                         str += "<a href=\"javascript:;\" class=\"a_last\">" + pageCount + "</a>";
                     }
-                    ;
+
                 }
-                ;
+
 
                 if (page >= pageCount) {
                     str += "<span class=\"disable\">\u4E0B\u4E00\u9875 &gt;</span>";
@@ -243,12 +273,110 @@
                 }
                 ;
                 str += '<span class="href"><label for="pageText">\u5230\u7B2C</label><input autocomplete="off" type="text" class="a_text" value="' + page + '"><label for="pageText">\u9875</label><input type="button" value="确定" class="a_button"></span>';
+
+                //左侧的菜单pageSize 控制菜单
+                str += ajaxPage.getHTMLByPageList();
+;
             }
-            ;
 
             options.pageId.html(str);
             return ajaxPage;
         }
+
+        ajaxPage.getHTMLByPageList = function () {
+            var pId = options.pageId;
+
+            console.log(pId);
+            console.log(options);
+            var pageList = options.pageList,
+                selectStr = '<select class="ui-page-size" name="ps" id="j-page-list"></select>'; //一个空的 select
+
+            //如果是一个数组，才进行处理
+            if($.isArray(pageList) && pageList.length > 0){
+                //拼接一个select 元素的所有 option
+                var optionsStr = "",
+                    isPushPageSize = true;  //是否加上 pageSize
+                for (var len = pageList.length, i = 0; i < len; i++) {
+
+                    var isSelected = "";  // 用来拼接 select 的字符串，默认是 空字符，就是不选中 select
+                    if(options.pageSize == pageList[i]){
+                        isSelected = "selected";
+                        isPushPageSize = false;
+                    }
+
+                    optionsStr += "<option value=" + pageList[i] + " " +isSelected+">" + pageList[i] + "</option>";
+                }
+
+                if(isPushPageSize){
+                    optionsStr = "<option value=" + options.pageSize + " selected>" + options.pageSize + "</option>" + optionsStr;
+                }
+
+                //组合 html
+                var htmls = '<div class="ui-page-list-wrap">' +
+                    '<label for="j-page-list">每页</label>' +
+                    '<select class="ui-page-list" name="ps" id="j-page-list">' +
+                    optionsStr +
+                    '</select>' +
+                    '<label for="j-page-list">条</label>' +
+                    '</div>';
+
+                return htmls;
+            }
+
+            return "";
+        }
+
+        /**
+         * 描述：让当前元素到屏幕中间，这里之所以这么设计，是为了让外部在多种条件下，都可以返回顶部
+         */
+        $.fn.goView = function (options) {
+            var options = $.extend({
+                "offsetY": -40, //当前元素 Y 轴偏移多少
+                "speed": 800
+            },options || {});
+
+            var $this = $(this);
+
+            var scrollTo = $this.offset().top + options.offsetY;
+
+            $("html,body").animate({"scrollTop":scrollTo},options.speed);
+        }
+
+        /**
+         * 名称：生成pageList
+         * 描述：通过pageList 参数生成HTML
+         */
+        /*ajaxPage.getHTMLByPageList = function () {
+            console.log(options);
+            var pageList = options.pageList,
+                selectStr = '<select class="ui-page-size" name="ps" id="j-page-list"></select>'; //一个空的 select
+
+            //如果是一个数组，才进行处理
+            if($.isArray(pageList) && pageList.length > 0){
+                //拼接一个select 元素的所有 option
+                var options = "",
+                    isPushPageSize = true;  //是否加上 pageSize
+                for (var len = pageList.length, i = 0; i < len; i++) {
+
+                    var isSelected = "";  // 用来拼接 select 的字符串，默认是 空字符，就是不选中 select
+                    if(options.pageSize == pageList[i]){
+                        isSelected = "selected";
+                        isPushPageSize = false;
+                    }
+
+                    options += "<option value=" + pageList[i] + " +isSelected+>" + pageList[i] + "</option>";
+                }
+
+                if(isPushPageSize){
+                    options += "<option value=" + pageList[i] + " selected>" + pageList[i] + "</option>";
+                }
+
+                //组合 select
+                return $(selectStr).html(options).toString();
+            }
+
+            return "";
+        }*/
 
         //对外暴露接口
         self.run = ajaxPage.run;
